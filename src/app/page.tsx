@@ -1,95 +1,108 @@
-import Image from "next/image";
+"use client";
+
+import styled from "styled-components";
 import styles from "./page.module.css";
+import { useState } from "react";
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+  padding: 22px 14px;
+`;
+
+const Input = styled.input`
+  width: 300px;
+  padding: 10px;
+  border: none;
+  background: #f2f2f2;
+  color: #9f9f9f;
+  &::placeholder {
+    color: #9f9f9f;
+  }
+`;
+
+const Button = styled.button`
+  background: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 12px;
+  font-weight: bold;
+  &:disabled {
+    background: #8d9e8e;
+    cursor: not-allowed;
+  }
+`;
+
+const Banner = styled.article`
+  background-color: #3f89f8;
+  padding: 15px;
+  color: white;
+`;
+
+const ErrorMessage = styled.span`
+  color: red;
+`
 
 export default function Home() {
+  const [values, setValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    setSubmitted(true);
+    console.log(event);
+  };
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <Form onSubmit={handleSubmit}>
+        {submitted ? <Banner>Success! Thank you for registering!</Banner> : null}
+        <Input
+          type="text"
+          placeholder="First Name"
+          value={values.firstName}
+          onChange={(event) =>
+            setValues((oldValues) => ({
+              ...oldValues,
+              firstName: event.target.value,
+            }))
+          }
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        {submitted && !values.firstName ? <ErrorMessage>Please enter a first name</ErrorMessage> : null}
+        <Input
+          type="text"
+          placeholder="Last Name"
+          value={values.lastName}
+          onChange={(event) =>
+            setValues((oldValues) => ({
+              ...oldValues,
+              lastName: event.target.value,
+            }))
+          }
+        />
+        {submitted && !values.lastName ? <ErrorMessage>Please enter a last name</ErrorMessage> : null}
+        <Input
+          type="email"
+          placeholder="Email"
+          value={values.email}
+          onChange={(event) =>
+            setValues((oldValues) => ({
+              ...oldValues,
+              email: event.target.value,
+            }))
+          }
+        />
+        {submitted && !values.email ? <ErrorMessage>Please enter an email</ErrorMessage> : null}
+        <Button disabled={!values.firstName && !values.lastName && !values.email} type="submit">Register</Button>
+      </Form>
     </main>
   );
 }
